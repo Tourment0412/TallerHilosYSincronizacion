@@ -44,7 +44,7 @@ public class HilosJava extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(RED+"Cliente: Espera terminarda" + RESET);
+			System.out.println(RED+"Cliente: Espera terminada" + RESET);
 			if (produccion_terminada && cola.isEmpty()) {
 				break;
 			}
