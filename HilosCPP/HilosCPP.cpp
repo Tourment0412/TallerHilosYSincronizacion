@@ -60,7 +60,7 @@ void productor() {
     for (int i = 1; i <= 30; ++i) {
         {
             cola.push(i);
-            std::cout << "Productor: generado elemento " << i << std::endl;
+            std::cout << "Fabrica: generando producto " << i << std::endl;
         }
         semaforo.notify(); 
         std::this_thread::sleep_for(std::chrono::milliseconds(tiempoProductor)); 
@@ -68,41 +68,44 @@ void productor() {
     produccion_terminada = true;
     semaforo.notify();
 }
+
 /* Metodo que consumira los productos siempre y cuando la cola no este vacia
  * esto se logra mediante la sincroninzacion con el producto.
  */
 void consumidor() {
     while (true) {
-        std::cout << "Consumidor: Esperando elemento" << std::endl;
+        std::cout << "Cliente: Esperando productos" << std::endl;
         semaforo.wait();
-        std::cout << "Consumidor: Espera terminada"<< std::endl;
+        std::cout << "Cliente: Espera terminada" << std::endl;
         if (produccion_terminada && cola.empty()) {
             break;
         }
 
         if (cola.empty()) {
-            throw std::runtime_error("Cola sin elementos");
+            throw std::runtime_error("Estanteria sin productos");
         }
 
         int elemento = cola.front();
         cola.pop();
-        std::cout << "Consumidor: consumido elemento " << elemento << std::endl;
+        std::cout << "Cliente: producto obtenido " << elemento << std::endl;
 
         ++elementos_consumidos;
         std::this_thread::sleep_for(std::chrono::milliseconds(tiempoConsumidor)); 
     }
 }
+
 /* Metodo main donde se inicializan los hilos y
  * se espera a que finalicen su ejecucion
  */
 int main() {
-    std::cout<<"Ingrese el tiempo de productor (milisegundos): ";
+    std::cout<<"Ingrese el tiempo de produccion de la fabrica (milisegundos): ";
     std::cin >> tiempoProductor;
-    std::cout<<"Ingrese el tiempo de consumidor (milisegundos): ";
+    std::cout<<"Ingrese el tiempo de consumo del cliente (milisegundos): ";
     std::cin >> tiempoConsumidor;
     std::cout << "\n";
     std::thread productor_thread(productor);
     std::thread consumidor_thread(consumidor);
+
     productor_thread.join();
     consumidor_thread.join();
     return 0;
