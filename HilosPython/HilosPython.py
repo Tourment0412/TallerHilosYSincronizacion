@@ -2,6 +2,9 @@ import threading
 import time
 import queue
 
+RESET="\033[0m"
+RED="\033[31m"
+GREEN="\033[32m"
 elementos_consumidos=0
 tiempoProductor=0.0
 tiempoConsumidor=0.0
@@ -18,7 +21,7 @@ def productor():
     global semaforo
     for i in range (1,31):
         cola.put(i)
-        print("\033[32mProductor: generado elemento "+str(i)+"\033[0m")
+        print(GREEN+"Fabrica: generando producto "+str(i)+RESET)
         semaforo.release()
         time.sleep(tiempoProductor)
     produccion_terminada=True
@@ -29,18 +32,18 @@ def consumidor():
     global elementos_consumidos
     global semaforo
     while(True):
-        print("\033[31mConsumidor: Esperando elemento\033[0m")
+        print(RED+"Cliente: Esperando productos"+RESET)
         semaforo.acquire()
-        print("\033[31mConsumidor: Espera terminada\033[0m")
+        print(RED+"Cliente: Espera terminada"+RESET)
 
         if (produccion_terminada and cola.empty()):
             break
 
         if (cola.empty()):
-            raise ValueError("Cola sin elementos")
+            raise ValueError("Estanteria sin productos")
         
         elemento=cola.get()
-        print("\033[31mConsumidor: consumido elemento "+str(elemento)+"\033[0m")
+        print(RED+"Cliente: producto obtenido "+str(elemento)+RESET)
         elementos_consumidos+=1
         time.sleep(tiempoConsumidor)
         
@@ -50,10 +53,13 @@ def consumidor():
 def main():
     global tiempoProductor
     global tiempoConsumidor
-    tiempoProductor=float(input("Ingrese el tiempo de productor (milisegundos): "))/1000
-    tiempoConsumidor=float(input("Ingrese el tiempo de consumidor (milisegundos): "))/1000
+    tiempoProductor=float(input("Ingrese el tiempo de produccion de la fabrica (milisegundos): "))/1000
+    tiempoConsumidor=float(input("Ingrese el tiempo de consumo del cliente (milisegundos): "))/1000
     t1 = threading.Thread(target=productor)
     t2 = threading.Thread(target=consumidor)
     t1.start()
     t2.start()
+    t1.join()
+    t2.join()
+
 main()
