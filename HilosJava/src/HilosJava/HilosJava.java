@@ -33,6 +33,7 @@ public class HilosJava extends Thread {
 		}
 	}
 
+	
 	public static void consumidor() {
 		while (true) {
 			System.out.println(RED+"Consumidor: Esperando elemento" + RESET);
@@ -67,10 +68,10 @@ public class HilosJava extends Thread {
 		try {
 			Scanner scanner = new Scanner(System.in);
 
-			System.out.print("Ingrese el tiempo de productor (milisegundos): ");
+			System.out.print("Ingrese el tiempo de produccion de la fabrica (milisegundos): ");
 			tiempoProductor = Double.parseDouble(scanner.nextLine());
 
-			System.out.print("Ingrese el tiempo de consumidor (milisegundos): ");
+			System.out.print("Ingrese el tiempo de consumo del cliente (milisegundos): ");
 			tiempoConsumidor = Double.parseDouble(scanner.nextLine());
 			Thread t1 = new Thread(HilosJava::productor);
 			Thread t2 = new Thread(HilosJava::consumidor);
