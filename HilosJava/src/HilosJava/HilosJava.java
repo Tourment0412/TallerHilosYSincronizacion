@@ -17,10 +17,11 @@ public class HilosJava extends Thread {
 	static Queue<Integer> cola = new LinkedList<>();
 	static Semaphore semaphore = new Semaphore(0);
 
+
 	public static void productor() {
 		for (int i = 1; i <= 30; i++) {
 			cola.add(i);
-			System.out.println(GREEN+"Productor: generando elemento " + i + RESET);
+			System.out.println(GREEN+"Fabrica: generando producto " + i + RESET);
 			try {
 				semaphore.release();
 				Thread.sleep((long) tiempoProductor);
@@ -28,32 +29,32 @@ public class HilosJava extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			produccion_terminada = true;
-			semaphore.release();
 		}
+		produccion_terminada = true;
+		semaphore.release();
+
 	}
 
-	
 	public static void consumidor() {
 		while (true) {
-			System.out.println(RED+"Consumidor: Esperando elemento" + RESET);
+			System.out.println(RED+"Cliente: Esperando productos" + RESET);
 			try {
 				semaphore.acquire();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(RED+"Consumidor: Espera terminarda" + RESET);
+			System.out.println(RED+"Cliente: Espera terminarda" + RESET);
 			if (produccion_terminada && cola.isEmpty()) {
 				break;
 			}
 
 			if (cola.isEmpty()) {
-				throw new IllegalStateException("Cola sin elementos");
+				throw new IllegalStateException("Estanteria sin productos");
 			}
 
 			int elemento = cola.remove();
-			System.out.println(RED+"Consumidor: elemento consumido " + elemento + RESET);
+			System.out.println(RED+"Cliente: producto obtenido " + elemento + RESET);
 			elementos_consumidos += 1;
 			try {
 				Thread.sleep((long) tiempoConsumidor);
@@ -63,6 +64,7 @@ public class HilosJava extends Thread {
 			}
 		}
 	}
+
 
 	public static void main(String args[]) {
 		try {
